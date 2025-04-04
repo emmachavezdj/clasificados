@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HOLA MENDOZA - Clasificados</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: red;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .zones {
+      margin: 20px 0;
+    }
+    .zone-button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .form-container {
+      margin: 20px 0;
+      text-align: left;
+    }
+    .form-container input, 
+    .form-container textarea, 
+    .form-container select {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      font-size: 16px;
+    }
+    .form-container button {
+      background: #28a745;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .announcement {
+      border: 1px solid #ddd;
+      background: #fff;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      text-align: left;
+    }
+    .announcement img {
+      max-width: 100px;
+      margin-top: 10px;
+    }
+    .adsense {
+      margin: 20px 0;
+    }
+    .phone-hidden {
+      display: none;
+    }
+    .mostrar-btn {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 3px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>HOLA MENDOZA - Clasificados</h1>
+    
+    <!-- Formulario para publicar anuncios -->
+    <div class="form-container">
+      <h2>Publica tu anuncio</h2>
+      <form id="announcementForm">
+        <label for="zoneSelect">Zona:</label>
+        <select id="zoneSelect" required>
+          <option value="">Selecciona una zona</option>
+          <option value="Corralitos">Corralitos</option>
+          <option value="Rodeo de la Cruz">Rodeo de la Cruz</option>
+          <option value="Godoy Cruz">Godoy Cruz</option>
+          <option value="Las Heras">Las Heras</option>
+          <option value="Guaymallén">Guaymallén</option>
+          <option value="Maipú">Maipú</option>
+          <option value="Lavalle">Lavalle</option>
+        </select>
+        
+        <label for="typeSelect">Tipo de anuncio:</label>
+        <select id="typeSelect" required>
+          <option value="Venta">Venta</option>
+          <option value="Aviso">Aviso</option>
+        </select>
+        
+        <label for="nameInput">Nombre:</label>
+        <input type="text" id="nameInput" placeholder="Tu nombre" required>
+        
+        <label for="phoneInput">Teléfono:</label>
+        <input type="text" id="phoneInput" placeholder="Tu teléfono" required>
+        
+        <label for="hidePhone">Ocultar número de teléfono</label>
+        <input type="checkbox" id="hidePhone">
+        
+        <label for="messageInput">Descripción:</label>
+        <textarea id="messageInput" placeholder="Escribe tu anuncio" required></textarea>
+        
+        <label for="imageInput">Subir imagen (opcional):</label>
+        <input type="file" id="imageInput" accept="image/*">
+        
+        <p>El anuncio se publicará durante 5 días.</p>
+        <button type="submit">Publicar anuncio</button>
+      </form>
+    </div>
+    
+    <!-- Sección para filtrar anuncios por zona -->
+    <h2>Filtrar por zona</h2>
+    <div class="zones" id="zonesContainer">
+      <button class="zone-button" onclick="filterAnnouncements('')">Mostrar todos</button>
+      <button class="zone-button" onclick="filterAnnouncements('Corralitos')">Corralitos</button>
+      <button class="zone-button" onclick="filterAnnouncements('Rodeo de la Cruz')">Rodeo de la Cruz</button>
+      <button class="zone-button" onclick="filterAnnouncements('Godoy Cruz')">Godoy Cruz</button>
+      <button class="zone-button" onclick="filterAnnouncements('Las Heras')">Las Heras</button>
+      <button class="zone-button" onclick="filterAnnouncements('Guaymallén')">Guaymallén</button>
+      <button class="zone-button" onclick="filterAnnouncements('Maipú')">Maipú</button>
+      <button class="zone-button" onclick="filterAnnouncements('Lavalle')">Lavalle</button>
+    </div>
+    
+    <!-- Contenedor para mostrar los anuncios publicados -->
+    <h2>Anuncios Publicados</h2>
+    <div id="announcementsContainer"></div>
+    
+    <!-- Sección de publicidad y contacto -->
+    <h2>Publicidad</h2>
+    <p>¿Querés anunciar tu negocio aquí? Contáctanos: <strong>2615915946</strong></p>
+    <div class="adsense">
+      <!-- PEGA AQUÍ TU CÓDIGO DE GOOGLE ADSENSE -->
+    </div>
+  </div>
+  
+  <script>
+    // Arreglo para almacenar anuncios
+    const announcements = [];
+    
+    // Manejar el envío del formulario
+    document.getElementById("announcementForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      
+      const zone = document.getElementById("zoneSelect").value;
+      const type = document.getElementById("typeSelect").value;
+      const name = document.getElementById("nameInput").value;
+      const phone = document.getElementById("phoneInput").value;
+      const hidePhone = document.getElementById("hidePhone").checked;
+      const message = document.getElementById("messageInput").value;
+      const imageInput = document.getElementById("imageInput");
+      
+      if (!zone || !type || !name || !phone || !message) {
+        alert("Por favor, completa todos los campos obligatorios.");
+        return;
+      }
+      
+      const announcement = {
+        zone, type, name, phone, hidePhone, message,
+        image: "",
+        timestamp: Date.now()
+      };
+      
+      function addAnnouncement() {
+        announcements.push(announcement);
+        renderAnnouncements();
+        // Configurar eliminación automática después de 5 días
+        setTimeout(() => {
+          const index = announcements.indexOf(announcement);
+          if (index !== -1) {
+            announcements.splice(index, 1);
+            renderAnnouncements();
+          }
+        }, 5 * 24 * 60 * 60 * 1000);
+        
+        alert("Tu anuncio ha sido publicado por 5 días.");
+      }
+      
+      if (imageInput.files && imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          announcement.image = e.target.result;
+          addAnnouncement();
+        }
+        reader.readAsDataURL(imageInput.files[0]);
+      } else {
+        addAnnouncement();
+      }
+      
+      this.reset();
+    });
+    
+    function renderAnnouncements(filterZone = "") {
+      const container = document.getElementById("announcementsContainer");
+      container.innerHTML = "";
+      
+      const filtered = filterZone ? announcements.filter(a => a.zone === filterZone) : announcements;
+      
+      if (filtered.length === 0) {
+        container.innerHTML = "<p>No hay anuncios publicados.</p>";
+        return;
+      }
+      
+      filtered.forEach((a, index) => {
+        const div = document.createElement("div");
+        div.className = "announcement";
+        
+        // Crear el HTML del anuncio
+        let announcementHTML = `<strong>${a.type} en ${a.zone}</strong><br>
+                                ${a.name} `;
+        // Manejar el número de teléfono oculto
+        if (a.hidePhone) {
+          announcementHTML += `(<span id="phone-${index}" class="phone-hidden">${a.phone}</span> <button class="mostrar-btn" onclick="mostrarTelefono(${index})">Mostrar teléfono</button>)<br>`;
+        } else {
+          announcementHTML += `(${a.phone})<br>`;
+        }
+        announcementHTML += `${a.message}<br>`;
+        if (a.image) {
+          announcementHTML += `<img src="${a.image}" alt="Imagen del anuncio">`;
+        }
+        div.innerHTML = announcementHTML;
+        container.appendChild(div);
+      });
+    }
+    
+    function filterAnnouncements(zone) {
+      renderAnnouncements(zone);
+    }
+    
+    function mostrarTelefono(index) {
+      const phoneSpan = document.getElementById("phone-" + index);
+      if (phoneSpan) {
+        phoneSpan.style.display = "inline";
+      }
+    }
+    
+    // Mostrar todos los anuncios inicialmente
+    renderAnnouncements();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
